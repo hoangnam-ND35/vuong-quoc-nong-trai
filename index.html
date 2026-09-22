@@ -105,7 +105,7 @@
         productName: "Vuong Quoc Nong Trai",
         productVersion: "1.0",
         matchWebGLToCanvasSize: true,
-        devicePixelRatio: mobile ? 1 : Math.min(window.devicePixelRatio || 1, 2)
+        devicePixelRatio: 1
       }, function (progress) {
         bar.style.width = Math.round(progress * 100) + "%";
       }).then(function (unityInstance) {
@@ -116,7 +116,12 @@
           if (e.key === "F11") { e.preventDefault(); unityInstance.SetFullscreen(1); }
         });
       }).catch(function (message) {
-        loading.innerHTML = "<h1>Không tải được game</h1><p>" + message + "</p><p>Hãy dùng Chrome hoặc Edge, bật WebGL, và thử lại trên Wi-Fi.</p>";
+        var raw = String(message || "");
+        var short = /OOM|memory|abort/i.test(raw)
+          ? "Trình duyệt hết bộ nhớ khi tải game. Hãy đóng tab khác rồi tải lại trang."
+          : (raw.split("\n")[0] || "Không khởi động được WebGL.");
+        if (short.length > 180) short = short.slice(0, 180) + "…";
+        loading.innerHTML = "<h1>Không tải được game</h1><p>" + short + "</p><p>Dùng Chrome hoặc Edge, rồi thử lại.</p>";
       });
     </script>
   </body>
